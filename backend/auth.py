@@ -7,7 +7,7 @@ import jwt
 from fastapi import Request, HTTPException
 from pydantic import BaseModel
 
-JWT_SECRET = os.getenv("JWT_SECRET", "fallback-dev-secret-change-me")
+JWT_SECRET = os.getenv("JWT_SECRET", "codefix-fallback-dev-secret-change-in-production-2024")
 JWT_ALGORITHM = "HS256"
 TOKEN_EXPIRY_DAYS = 7
 

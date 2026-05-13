@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: code-debugger
+    name: code-fix
     env: python
     region: oregon
     plan: free
@@ -16,5 +16,9 @@ services:
         sync: false
       - key: GROQ_MODEL
         value: "llama-3.3-70b-versatile"
+      - key: JWT_SECRET
+        sync: false
       - key: PYTHON_VERSION
         value: "3.11.0"
+      - key: NODE_VERSION
+        value: "18.20.0"

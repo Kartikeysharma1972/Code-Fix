@@ -2,37 +2,40 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
-const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : window.location.origin;
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("auth_token"));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
+    const storedToken = localStorage.getItem("auth_token");
+    if (!storedToken) {
       setLoading(false);
       return;
     }
-    fetch(`${API_BASE}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+    fetch("/api/auth/me", {
+      headers: { Authorization: `Bearer ${storedToken}` },
     })
       .then((r) => {
         if (!r.ok) throw new Error("Invalid token");
         return r.json();
       })
-      .then((data) => setUser(data))
+      .then((data) => {
+        setToken(storedToken);
+        setUser(data);
+      })
       .catch(() => {
         localStorage.removeItem("auth_token");
         setToken(null);
+        setUser(null);
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, []);
 
   const getAnonymousId = () => localStorage.getItem("debugger_user_id") || null;
 
   const login = async (email, password) => {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, anonymous_id: getAnonymousId() }),
@@ -47,7 +50,7 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (email, password, displayName) => {
-    const res = await fetch(`${API_BASE}/api/auth/signup`, {
+    const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

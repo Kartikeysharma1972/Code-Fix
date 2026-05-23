@@ -3,7 +3,7 @@ import "./App.css";
 import DebugHistory from "./DebugHistory";
 import { useAuth } from "./context/AuthContext";
 
-const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : window.location.origin;
+const API_BASE = "";
 
 const LANGUAGES = [
   "auto-detect", "Python", "JavaScript", "TypeScript",

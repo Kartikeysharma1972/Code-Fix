@@ -505,7 +505,14 @@ async def signup(request: SignupRequest):
 async def login(request: LoginRequest):
     email = request.email.strip().lower()
     user = db.get_user_by_email(email)
-    if not user or not verify_password(request.password, user['password_hash']):
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    try:
+        password_valid = verify_password(request.password, user['password_hash'])
+    except Exception as e:
+        print(f"[AUTH] Password verification error for {email}: {e}")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not password_valid:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     db.update_last_login(user['id'])
